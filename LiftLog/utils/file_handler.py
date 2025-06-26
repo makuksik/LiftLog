@@ -1,8 +1,8 @@
 import json
 import os
 
-from GymAssistant.models.exercise import Exercise
-from GymAssistant.models.workout_plan import WorkoutPlan
+from models.exercise import Exercise
+from models.workout_plan import WorkoutPlan
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
