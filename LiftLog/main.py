@@ -42,7 +42,7 @@ def main():
                     plan.add_exercise(match)
                     print("✓ Dodano.")
                 else:
-                    print("️N ie znaleziono ćwiczenia.")
+                    print("️Nie znaleziono ćwiczenia.")
                 selected = input("Dodaj kolejne ćwiczenie (Enter = koniec): ")
             plans.append(plan)
 
