@@ -36,11 +36,8 @@ def load_data():
         # odczyt planów i przypisanych ćwiczeń
         with open(os.path.join(DATA_DIR, 'plans.json'), 'r') as f:
             plans_json = json.load(f)
-            for p in plans_json:
-                plan = WorkoutPlan(p['name'])
-                for e in p['exercises']:
-                    plan.add_exercise(Exercise(**e))
-                plans.append(plan)
+            plans = [create_plan_from_json(p) for p in plans_json]
+
     except Exception as e:
         print(f"Błąd odczytu danych: {e}")
     return exercises, plans
@@ -81,3 +78,14 @@ def load_sessions():
     except Exception as e:
         print(f"Błąd odczytu sesji: {e}")
     return sessions
+
+def create_plan_from_json(plan_json):
+    plan = WorkoutPlan(plan_json['name'])
+    for e in plan_json['exercises']:
+        if 'exercises' in e:  # podplan (rekurencja)
+            subplan = create_plan_from_json(e)
+            plan.add_exercise(subplan)
+        else:
+            plan.add_exercise(Exercise(**e))
+    return plan
+

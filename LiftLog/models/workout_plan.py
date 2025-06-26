@@ -1,5 +1,8 @@
 from models.exercise import Exercise
 
+from LiftLog.utils.decorators import log_start_end
+
+
 # Klasa reprezentująca plan treningowy z listą ćwiczeń
 class WorkoutPlan:
     def __init__(self, name: str):
@@ -27,6 +30,7 @@ class TrainingSession:
         self.series = []  # lista wykonanych serii
 
     # Przeprowadza trening z inputem użytkownika
+    @log_start_end
     def start(self):
         print(f"\nRozpoczynasz trening: {self.plan.name}")
         for exercise in self.plan.exercises:
