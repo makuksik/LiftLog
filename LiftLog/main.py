@@ -1,4 +1,3 @@
-# main.py
 from models.exercise import Exercise
 from models.workout_plan import WorkoutPlan, TrainingSession
 from utils.file_handler import save_data, load_data, save_sessions, load_sessions
