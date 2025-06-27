@@ -1,7 +1,17 @@
 from models.exercise import Exercise
 from models.workout_plan import WorkoutPlan, TrainingSession
-from utils.file_handler import save_data, load_data, save_sessions, load_sessions
-from utils.analysis import show_statistics, filter_exercises, filter_exercises_by_weight, plot_total_weight_per_exercise
+from utils.file_handler import (
+    save_data,
+    load_data,
+    save_sessions,
+    load_sessions,
+)
+from utils.analysis import (
+    show_statistics,
+    filter_exercises,
+    filter_exercises_by_weight,
+    plot_total_weight_per_exercise,
+)
 
 
 def main_menu():
@@ -20,6 +30,7 @@ def main_menu():
     print("12. Pokaż ćwiczenia z ciężarem powyżej podanego")
     print("13. Wygeneruj wykres ciężarów ćwiczeń")
     print("0. Wyjście")
+
 
 def main():
     exercises, plans = load_data()
@@ -42,9 +53,13 @@ def main():
             plan = WorkoutPlan(plan_name)
             for ex in exercises:
                 print(f"- {ex.name} ({ex.muscle_group})")
-            selected = input("Wpisz nazwę ćwiczenia do dodania (Enter = koniec): ")
+            selected = input(
+                "Wpisz nazwę ćwiczenia do dodania (Enter = koniec): "
+            )
             while selected:
-                match = next((e for e in exercises if e.name == selected), None)
+                match = next(
+                    (e for e in exercises if e.name == selected), None
+                )
                 if match:
                     plan.add_exercise(match)
                     print("✓ Dodano.")
@@ -84,7 +99,9 @@ def main():
             for i, ex in enumerate(exercises):
                 print(f"{i + 1}. {ex.name} ({ex.muscle_group})")
             try:
-                idx = int(input("Wybierz numer ćwiczenia do usunięcia: ")) - 1
+                idx = int(
+                    input("Wybierz numer ćwiczenia do usunięcia: ")
+                ) - 1
                 removed = exercises.pop(idx)
                 print(f"✓ Usunięto ćwiczenie: {removed.name}")
             except (ValueError, IndexError):
@@ -109,9 +126,12 @@ def main():
                 continue
             print("\n=== Historia treningów ===")
             for i, session in enumerate(sessions):
-                print(f"\nTrening {i+1} - Plan: {session.plan.name}")
+                print(f"\nTrening {i + 1} - Plan: {session.plan.name}")
                 for serie in session.series:
-                    print(f" - {serie.exercise.name}: {serie.reps} x {serie.weight}kg")
+                    print(
+                        f" - {serie.exercise.name}: "
+                        f"{serie.reps} x {serie.weight}kg"
+                    )
 
         elif choice == '10':
             if not plans:
@@ -122,14 +142,24 @@ def main():
             try:
                 idx = int(input("Wybierz plan do filtrowania: ")) - 1
                 selected_plan = plans[idx]
-                muscle_group = input("Podaj nazwę grupy mięśniowej do filtrowania: ")
-                filtered = filter_exercises(selected_plan, lambda e: e.muscle_group.lower() == muscle_group.lower())
+                muscle_group = input(
+                    "Podaj nazwę grupy mięśniowej do filtrowania: "
+                )
+                filtered = filter_exercises(
+                    selected_plan,
+                    lambda e: e.muscle_group.lower() == muscle_group.lower(),
+                )
                 if filtered:
-                    print(f"\nĆwiczenia na grupę mięśniową '{muscle_group}':")
+                    print(
+                        f"\nĆwiczenia na grupę mięśniową '{muscle_group}':"
+                    )
                     for ex in filtered:
                         print(f"- {ex.name}")
                 else:
-                    print(f"\nBrak ćwiczeń dla grupy mięśniowej '{muscle_group}' w planie '{selected_plan.name}'.")
+                    print(
+                        f"\nBrak ćwiczeń dla grupy mięśniowej "
+                        f"'{muscle_group}' w planie '{selected_plan.name}'."
+                    )
             except (ValueError, IndexError):
                 print("Nieprawidłowy wybór planu.")
 
@@ -142,7 +172,7 @@ def main():
             for muscle in sorted(unique_muscles):
                 print(f"✓ {muscle}")
 
-        elif choice == '12':  # nowa opcja
+        elif choice == '12':
             if not sessions:
                 print("Brak historii treningów.")
                 continue
@@ -150,11 +180,15 @@ def main():
                 min_w = float(input("Podaj minimalny ciężar (kg): "))
                 filtered_ex = filter_exercises_by_weight(sessions, min_w)
                 if filtered_ex:
-                    print(f"\nĆwiczenia z ciężarem większym niż {min_w} kg:")
+                    print(
+                        f"\nĆwiczenia z ciężarem większym niż {min_w} kg:"
+                    )
                     for ex in filtered_ex:
                         print(f"- {ex.name} ({ex.muscle_group})")
                 else:
-                    print(f"Brak ćwiczeń z ciężarem większym niż {min_w} kg.")
+                    print(
+                        f"Brak ćwiczeń z ciężarem większym niż {min_w} kg."
+                    )
             except ValueError:
                 print("Nieprawidłowa wartość.")
 
@@ -164,13 +198,13 @@ def main():
                 continue
             plot_total_weight_per_exercise(sessions)
 
-
         elif choice == '0':
             print("Do zobaczenia!")
             break
 
         else:
             print("Nieprawidłowa opcja.")
+
 
 if __name__ == "__main__":
     main()
