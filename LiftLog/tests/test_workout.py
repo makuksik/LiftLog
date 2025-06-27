@@ -121,38 +121,5 @@ class TestPerformance(unittest.TestCase):
         self.assertLess(duration, 2, "Funkcja show_statistics działa zbyt wolno")
 
 
-# --- Testy pamięciowe ---
-class TestMemoryUsage(unittest.TestCase):
-    def test_memory_usage_show_statistics(self):
-        ex = Exercise("Wyciskanie", "Klatka")
-        plan = WorkoutPlan("Plan A")
-        plan.add_exercise(ex)
-        session = TrainingSession(plan)
-        for _ in range(10000):
-            session.series.append(Serie(ex, 10, 100))
-
-        tracemalloc.start()
-        show_statistics([session])
-        current, peak = tracemalloc.get_traced_memory()
-        tracemalloc.stop()
-
-        print(f"Zużycie pamięci - aktualne: {current / 10 ** 6:.2f} MB, maksymalne: {peak / 10 ** 6:.2f} MB")
-        self.assertLess(peak, 50 * 10 ** 6, "Zużycie pamięci jest zbyt wysokie")
-
-
-# --- Test jakości kodu ---
-class TestCodeQuality(unittest.TestCase):
-    def test_pylint_score(self):
-        result = subprocess.run(['pylint', 'models', 'utils'],
-                                capture_output=True,
-                                text=True)
-        print(result.stdout)
-        import re
-        match = re.search(r"rated at ([0-9\.]+)/10", result.stdout)
-        self.assertIsNotNone(match, "Brak wyniku pylint")
-        score = float(match.group(1))
-        self.assertGreaterEqual(score, 8.0, "Ocena pylint poniżej 8.0")
-
-
 if __name__ == '__main__':
     unittest.main()

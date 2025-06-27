@@ -13,6 +13,7 @@ class WorkoutPlan:
     def add_exercise(self, exercise: Exercise):
         self.exercises.append(exercise)
 
+
 # Klasa reprezentująca jedną serię danego ćwiczenia
 class Serie:
     def __init__(self, exercise, reps, weight):
@@ -22,6 +23,7 @@ class Serie:
         self.exercise = exercise
         self.reps = reps
         self.weight = weight
+
 
 # Klasa reprezentująca pełną sesję treningową na podstawie planu
 class TrainingSession:

@@ -1,49 +1,45 @@
 from functools import reduce
-from LiftLog.models.workout_plan import WorkoutPlan
-import matplotlib.pyplot as plt
 from collections import defaultdict
-
+import matplotlib.pyplot as plt
+from LiftLog.models.workout_plan import WorkoutPlan
 
 
 def show_statistics(sessions):
-    total_volume = reduce(lambda acc, s: acc + sum(x.reps * x.weight for x in s.series), sessions, 0)
+    total_volume = reduce(
+        lambda acc, s: acc + sum(x.reps * x.weight for x in s.series),
+        sessions,
+        0
+    )
     print(f"\nCałkowita objętość treningowa: {total_volume:.2f} kg")
+
 
 def filter_exercises(plan, predicate):
     """
     Rekurencyjnie zwraca listę ćwiczeń z planu i podplanów,
-    które spełniają warunek zdefiniowany w predicate (funkcja przyjmująca Exercise i zwracająca bool).
+    które spełniają warunek zdefiniowany w predicate.
     """
     filtered = []
     for e in plan.exercises:
         if isinstance(e, WorkoutPlan):  # podplan — rekurencyjnie
             filtered.extend(filter_exercises(e, predicate))
-        else:
-            if predicate(e):
-                filtered.append(e)
+        elif predicate(e):
+            filtered.append(e)
     return filtered
+
 
 def filter_exercises_by_weight(sessions, min_weight):
     """
     Zwraca listę unikalnych ćwiczeń, które w sesjach treningowych
-    wykonano z ciężarem > min_weight.
+    wykonano z ciężarem większym niż min_weight.
     """
-
-    # Najpierw spłaszczamy wszystkie serie ze wszystkich sesji:
-    all_series = [serie for session in sessions for serie in session.series]
-
-    # Filtrujemy serie z ciężarem większym niż min_weight
+    all_series = [s for session in sessions for s in session.series]
     filtered_series = filter(lambda s: s.weight > min_weight, all_series)
-
-    # Mapujemy te serie na ćwiczenia
     exercises = map(lambda s: s.exercise, filtered_series)
-
-    # Unikalne ćwiczenia (set)
     unique_exercises = set(exercises)
-
     return list(unique_exercises)
 
-def plot_total_weight_per_exercise(sessions, filename="total_weight_per_exercise.png"):
+def plot_total_weight_per_exercise(sessions,
+                                   filename="total_weight_per_exercise.png"):
     total_weights = defaultdict(float)
     for session in sessions:
         for serie in session.series:
@@ -53,8 +49,11 @@ def plot_total_weight_per_exercise(sessions, filename="total_weight_per_exercise
         print("Brak danych do wykresu.")
         return
 
-    exercises = list(total_weights.keys())
-    weights = list(total_weights.values())
+    # Sortowanie według wagi malejąco
+    sorted_items = sorted(
+        total_weights.items(), key=lambda x: x[1], reverse=True
+    )
+    exercises, weights = zip(*sorted_items)
 
     plt.figure(figsize=(10, 6))
     plt.bar(exercises, weights, color='skyblue')
