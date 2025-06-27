@@ -1,10 +1,6 @@
 import unittest
-import os
-import json
 from contextlib import redirect_stdout
 import time
-import tracemalloc
-import subprocess
 from io import StringIO
 
 from models.exercise import Exercise
